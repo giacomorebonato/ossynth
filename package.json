@@ -9,7 +9,8 @@
     "tone": "^0.12.80"
   },
   "engines": {
-    "node": "10.10.0"
+    "node": "10.10.0",
+    "yarn": "1.7.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
