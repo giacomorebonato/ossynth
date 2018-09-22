@@ -1,22 +1,65 @@
-import * as React from 'react';
-import './App.css';
+import { Layout } from 'antd'
+import * as React from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import Tone from 'tone'
+import { midiToNote } from './lib/midiToNote'
+import { Home } from './pages'
 
-import logo from './logo.svg';
+let synth = new Tone.Synth().toMaster()
+
+let { Header, Footer, Content, Sider } = Layout
+
+function handleMidiMessage(message: any) {
+  let { data } = message // this gives us our [command/channel, note, velocity] data.
+  let [command, note] = data
+
+  // let newVelocity = velocity / 127;
+
+  switch(command) {
+    case 144:
+      synth.triggerAttack(midiToNote[note])
+    case 128:
+      synth.triggerRelease()
+  }
+
+  console.log('MIDI data', data) // MIDI data [144, 63, 73] === [type of data, note, velocity]
+}
 
 class App extends React.Component {
+  componentDidMount() {
+    navigator.requestMIDIAccess().then(
+      access => {
+        let midiAccess = access
+        let { inputs } = midiAccess
+        let inputIterators = inputs.values()
+
+        let firstInput = inputIterators.next().value
+
+        if (!firstInput) return
+
+        firstInput.onmidimessage = handleMidiMessage
+      },
+      error =>
+        console.log(
+          'Oops. Something were wrong with requestMIDIAccess',
+          error.code
+        )
+    )
+  }
   public render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </div>
-    );
+      <Router>
+        <Layout>
+          <Header>Ossynth</Header>
+          <Content>
+            <Sider>Sider</Sider>
+            <Route path="/" component={Home} />
+          </Content>
+          <Footer>Footer</Footer>
+        </Layout>
+      </Router>
+    )
   }
 }
 
-export default App;
+export default App
