@@ -39,13 +39,12 @@ class App extends React.Component {
 
         firstInput.onmidimessage = handleMidiMessage
       },
-      error =>
-        console.log(
-          'Oops. Something were wrong with requestMIDIAccess',
-          error.code
-        )
+      error => {
+        throw error
+      }
     )
   }
+
   public render() {
     return (
       <Router>
