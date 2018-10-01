@@ -5,11 +5,12 @@ let notes = [
 ]
 
 function createMidiToNote() {
+  const start = 12
   let midiMap = {}
 
   for (let i = 0; i < 8; i++) {
     notes.forEach((note, y) => {
-      let midiKey = y + i * notes.length
+      const midiKey = start + y + i * notes.length
       midiMap[midiKey] = note + i
     })
   }

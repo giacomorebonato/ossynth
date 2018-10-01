@@ -5,27 +5,18 @@ import Tone from 'tone'
 import { midiToNote } from './lib/midiToNote'
 import { Home } from './pages'
 
-let synth = new Tone.Synth().toMaster()
+let synth = new Tone.PolySynth(10, Tone.Synth).toMaster()
 
 let { Header, Footer, Content, Sider } = Layout
 
-function handleMidiMessage(message: any) {
-  let { data } = message // this gives us our [command/channel, note, velocity] data.
-  let [command, note] = data
 
-  // let newVelocity = velocity / 127;
-
-  switch(command) {
-    case 144:
-      synth.triggerAttack(midiToNote[note])
-    case 128:
-      synth.triggerRelease()
-  }
-
-  console.log('MIDI data', data) // MIDI data [144, 63, 73] === [type of data, note, velocity]
-}
 
 class App extends React.Component {
+
+  state = {
+    notesPlaying: {}
+  }
+
   componentDidMount() {
     navigator.requestMIDIAccess().then(
       access => {
@@ -37,7 +28,7 @@ class App extends React.Component {
 
         if (!firstInput) return
 
-        firstInput.onmidimessage = handleMidiMessage
+        firstInput.onmidimessage = this.handleMidiMessage
       },
       error => {
         throw error
@@ -52,12 +43,40 @@ class App extends React.Component {
           <Header>Ossynth</Header>
           <Content>
             <Sider>Sider</Sider>
+
+            <h2>{this.getNotes()}</h2>
+
             <Route path="/" component={Home} />
           </Content>
           <Footer>Footer</Footer>
         </Layout>
       </Router>
     )
+  }
+
+  private handleMidiMessage = (message: any) => {
+    let { data } = message // this gives us our [command/channel, note, velocity] data.
+    let [command, midi, velocity] = data
+    let notesPlaying: any = {...this.state.notesPlaying}
+    const note = midiToNote[midi]
+
+    // let newVelocity = velocity / 127;
+
+    // As per API definition, some devices indicate the stop command changin velocity to 0
+    if (command === 128 || velocity === 0) {
+      synth.triggerRelease(note)
+      delete notesPlaying[midi]
+    } else {
+      synth.triggerAttack(note)
+      notesPlaying[midi] = note
+    }
+    this.setState({notesPlaying})
+
+    console.log('MIDI data', data) // MIDI data [144, 63, 73] === [type of data, note, velocity]
+  }
+
+  private getNotes() {
+    return Object.keys(this.state.notesPlaying).sort().map(k => this.state.notesPlaying[k]).join(' - ')
   }
 }
 
