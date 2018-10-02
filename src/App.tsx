@@ -19,8 +19,7 @@ class App extends React.Component {
 
   componentDidMount() {
     navigator.requestMIDIAccess().then(
-      access => {
-        let midiAccess = access
+      midiAccess => {
         let { inputs } = midiAccess
         let inputIterators = inputs.values()
 
@@ -60,14 +59,12 @@ class App extends React.Component {
     let notesPlaying: any = {...this.state.notesPlaying}
     const note = midiToNote[midi]
 
-    // let newVelocity = velocity / 127;
-
     // As per API definition, some devices indicate the stop command changin velocity to 0
     if (command === 128 || velocity === 0) {
       synth.triggerRelease(note)
       delete notesPlaying[midi]
     } else {
-      synth.triggerAttack(note)
+      synth.triggerAttack(note, undefined, velocity / 127)
       notesPlaying[midi] = note
     }
     this.setState({notesPlaying})
