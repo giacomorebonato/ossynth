@@ -7,6 +7,7 @@ import { AbcAdapter } from './lib/abc.adapter'
 import { midiToNote } from './lib/midiToNote'
 import { Home } from './pages'
 
+Tone.context.lookAhead = 0
 let synth = new Tone.PolySynth(10, Tone.Synth).toMaster()
 
 let { Header, Footer, Content, Sider } = Layout

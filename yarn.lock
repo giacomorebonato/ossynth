@@ -107,6 +107,7 @@ abbrev@1:
 abcjs@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/abcjs/-/abcjs-5.2.0.tgz#72280a9cf96779a475c108938c40714c82ba5d37"
+  integrity sha512-VBTgtp2esnv6RR2N6Nsa+V7VE07H/TLtUju+Orh6anud5KDfUE6eEM8OWt2oKMwKR2zsrY8Y5KyH541uyV2DEw==
   dependencies:
     midi "https://github.com/paulrosen/MIDI.js.git#abcjs"
 
@@ -5580,9 +5581,9 @@ micromatch@^3.1.10, micromatch@^3.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.2"
 
-"midi@git+https://github.com/paulrosen/MIDI.js.git#abcjs":
+"midi@https://github.com/paulrosen/MIDI.js.git#abcjs":
   version "0.4.2"
-  resolved "git+https://github.com/paulrosen/MIDI.js.git#e593ffef81a0350f99448e3ab8111957145ff6b2"
+  resolved "https://github.com/paulrosen/MIDI.js.git#e593ffef81a0350f99448e3ab8111957145ff6b2"
 
 miller-rabin@^4.0.0:
   version "4.0.1"
