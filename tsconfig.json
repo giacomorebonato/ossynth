@@ -1,0 +1,12 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "rootDir": ".",
+    "outDir": "build",
+    "jsx": "react",
+    "lib": ["dom"]
+  },
+  "include": ["src/**/*"],
+  "rootDirs": ["src", "stories"]
+}
